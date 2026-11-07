@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - GhPrograms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg-dark: #111111; --border-color: #e5e5e5; --font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-family); background-color: #f4f4f5; color: #111; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+        
+        /* Tela de Login Admin */
+        #login-screen { display: flex; height: 100vh; align-items: center; justify-content: center; background: var(--bg-dark); }
+        .login-box { background: #fff; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .login-box i { font-size: 40px; margin-bottom: 16px; color: var(--bg-dark); }
+        .login-box h2 { margin-bottom: 8px; }
+        .login-box p { color: #666; font-size: 14px; margin-bottom: 24px; }
+        .login-box input { width: 100%; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
+        .login-box input:focus { border-color: var(--bg-dark); }
+        .login-box button { width: 100%; padding: 14px; background: var(--bg-dark); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; }
+        .login-box button:hover { background: #333; }
+
+        /* Dashboard */
+        #dashboard { display: none; padding-bottom: 60px; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-top: 20px; }
+        .top-nav h1 { font-size: 24px; }
+        .top-nav a { text-decoration: none; color: #666; font-size: 14px; font-weight: 500; }
+        .top-nav a:hover { color: #111; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: #fff; padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .stat-card h3 { font-size: 13px; color: #666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card p { font-size: 32px; font-weight: 700; }
+        
+        .table-container { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-bottom: 24px; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .table-container h3 { margin-bottom: 20px; font-size: 18px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { background: #f9f9f9; font-weight: 600; color: #444; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        tr:last-child td { border-bottom: none; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-green { background: #d1fae5; color: #065f46; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <i class="fa-solid fa-lock"></i>
+            <h2>Acesso Restrito</h2>
+            <p>Digite o token de administrador para continuar.</p>
+            <input type="password" id="admin-token" placeholder="Token de acesso...">
+            <button onclick="checkToken()">Entrar no Painel</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="container">
+        <div class="top-nav">
+            <h1><i class="fa-solid fa-cube"></i> Admin GhPrograms</h1>
+            <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Voltar para a Loja</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total de Usuários</h3>
+                <p id="total-users">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total de Vendas</h3>
+                <p id="total-sales">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Faturamento (Saldo)</h3>
+                <p id="total-revenue" style="color: #059669;">R$ 0,00</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h3>Logins Registrados</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>E-mail</th>
+                        <th>Senha</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h3>Histórico de Compras</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Comprador</th>
+                        <th>Produto</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="purchases-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_TOKEN = "soloko"; // SEU TOKEN AQUI
+
+        function checkToken() {
+            const token = document.getElementById('admin-token').value;
+            if (token === ADMIN_TOKEN) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadDashboard();
+            } else {
+                alert("Token incorreto! Acesso negado.");
+            }
+        }
+
+        function loadDashboard() {
+            // Puxa os dados salvos pelo index.html e produto.html
+            const users = JSON.parse(localStorage.getItem('gh_users')) || [];
+            const purchases = JSON.parse(localStorage.getItem('gh_purchases')) || [];
+            
+            // Preenche Usuários
+            const usersTbody = document.getElementById('users-table-body');
+            usersTbody.innerHTML = '';
+            document.getElementById('total-users').innerText = users.length;
+
+            users.forEach(u => {
+                usersTbody.innerHTML += `<tr><td>${u.email}</td><td>${u.pass}</td></tr>`;
+            });
+
+            // Preenche Compras
+            const purchasesTbody = document.getElementById('purchases-table-body');
+            purchasesTbody.innerHTML = '';
+            document.getElementById('total-sales').innerText = purchases.length;
+            
+            let revenue = 0;
+            purchases.forEach(p => {
+                revenue += p.price;
+                purchasesTbody.innerHTML += `
+                    <tr>
+                        <td>${p.date}</td>
+                        <td>${p.email}</td>
+                        <td><strong>${p.productName}</strong></td>
+                        <td>R$ ${p.price.toFixed(2).replace('.', ',')}</td>
+                        <td><span class="badge badge-green">Aprovado</span></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('total-revenue').innerText = `R$ ${revenue.toFixed(2).replace('.', ',')}`;
+        }
+    </script>
+</body>
+</html>

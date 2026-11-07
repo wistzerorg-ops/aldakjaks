@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - GhPrograms</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ================= RESET E VARIÁVEIS ================= */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9f9f9;
+            --bg-dark: #111111;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border-color: #e5e5e5;
+            --accent-green: #c8fa5e;
+            --font-family: 'Inter', sans-serif;
+            --max-width: 1200px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-secondary);
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; border: none; }
+        
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        /* ================= HEADER SIMPLES ================= */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo i { font-size: 28px; }
+        .back-link {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--text-main); }
+
+        /* ================= CHECKOUT LAYOUT ================= */
+        .checkout-wrapper {
+            flex: 1;
+            padding: 60px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+        }
+
+        /* --- LADO ESQUERDO: DETALHES DO PRODUTO --- */
+        .product-side {
+            padding: 48px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .product-badge {
+            background: var(--bg-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .product-side h1 {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .product-side p.desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        /* Terminal Mock no Checkout */
+        .terminal-mock {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .terminal-header {
+            background: #222;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            border-bottom: 1px solid #333;
+        }
+        .terminal-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .terminal-body {
+            padding: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .terminal-line { display: flex; justify-content: space-between; }
+        .terminal-line span { color: #fff; }
+
+        .features-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .features-list i { color: var(--text-main); }
+
+        /* --- LADO DIREITO: PAGAMENTO --- */
+        .payment-side {
+            padding: 48px;
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-side h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .total-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 24px;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 24px;
+        }
+        .total-box span { font-size: 14px; color: var(--text-muted); }
+        .total-box .price { font-size: 32px; font-weight: 700; color: var(--text-main); }
+
+        .pix-box {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .pix-box img {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 16px;
+            object-fit: contain;
+        }
+
+        .pix-key-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .pix-key-wrapper span {
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .btn-copy {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-copy:hover { color: var(--text-main); }
+
+        .btn-pay {
+            width: 100%;
+            background: var(--bg-dark);
+            color: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-pay:hover { background: #333; }
+        .btn-pay:active { transform: scale(0.98); }
+
+        .secure-info {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Responsivo */
+        @media (max-width: 900px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+            .product-side { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+        @media (max-width: 600px) {
+            .product-side, .payment-side { padding: 24px; }
+            .product-side h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-cube"></i> GhPrograms
+            </a>
+            <a href="index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para a loja
+            </a>
+        </div>
+    </header>
+
+    <main class="checkout-wrapper">
+        <div class="container">
+            <div class="checkout-grid">
+                
+                <!-- Lado Esquerdo: Produto -->
+                <div class="product-side">
+                    <span class="product-badge" id="product-cat">Carregando...</span>
+                    <h1 id="product-name">Carregando...</h1>
+                    <p class="desc" id="product-desc">Buscando informações do produto...</p>
+
+                    <div class="terminal-mock">
+                        <div class="terminal-header">
+                            <div class="terminal-dot" style="background:#ff5f56"></div>
+                            <div class="terminal-dot" style="background:#ffbd2e"></div>
+                            <div class="terminal-dot" style="background:#27c93f"></div>
+                        </div>
+                        <div class="terminal-body" id="terminal-content">
+                            <div>Iniciando pacote de instalação...</div>
+                            <div class="terminal-line"><span>Verificando compatibilidade</span> <span>OK</span></div>
+                            <div class="terminal-line"><span>Preparando envio</span> <span>99%</span></div>
+                        </div>
+                    </div>
+
+                    <ul class="features-list">
+                        <li><i class="fa-solid fa-check"></i> Entrega automática via Gmail</li>
+                        <li><i class="fa-solid fa-check"></i> Suporte técnico incluso</li>
+                        <li><i class="fa-solid fa-check"></i> Atualizações gratuitas</li>
+                    </ul>
+                </div>
+
+                <!-- Lado Direito: Pagamento -->
+                <div class="payment-side">
+                    <h2>Finalizar Pagamento</h2>
+
+                    <div class="total-box">
+                        <span>Total a pagar</span>
+                        <div class="price" id="product-price">R$ 0,00</div>
+                    </div>
+
+                    <div class="pix-box">
+                        <img src="imagens/qrcode.png" alt="QR Code Pix" id="pix-qrcode">
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                            Escaneie o QR Code acima ou use a chave abaixo.
+                        </p>
+                        
+                        <div class="pix-key-wrapper">
+                            <span>15991038617</span>
+                            <button class="btn-copy" onclick="copyPix()">
+                                <i class="fa-regular fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; text-align: center;">
+                        O produto será enviado para: <strong id="user-email" style="color: var(--text-main);"></strong>
+                    </p>
+
+                    <button class="btn-pay" onclick="processPayment()">
+                        <i class="fa-solid fa-circle-check"></i> Já Paguei, Liberar Acesso
+                    </button>
+
+                    <div class="secure-info">
+                        <i class="fa-solid fa-shield-halved"></i> Ambiente 100% seguro
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // MESMO BANCO DE DADOS DO INDEX
+        const productsDB = [
+            { id: 1, name: "Internal Cheat Samp by Gh!", price: 8.90, cat: "SA-MP", desc: "Arquivo interno, Só Rodar e Jogar! Compatibilidade SAMP R4+.", file: "samp_internal.exe" },
+            { id: 2, name: "Pack Cleo Multifuncões", price: 15.90, cat: "SA-MP", desc: "Diversas modificações em um único pacote CLEO.", file: "cleo_loader.log" },
+            { id: 3, name: "Pack Otimizacão PC!", price: 12.90, cat: "SA-MP", desc: "Melhore o FPS e reduza o lag do seu jogo.", file: "fps_boost.bat" },
+            { id: 4, name: "External Cheat MTA SA by Gh!", price: 7.40, cat: "MTA:SA", desc: "Cheat externo indetectável, interface limpa.", file: "mta_ext.exe" },
+            { id: 5, name: "Pack Macro AHK Vip", price: 11.90, cat: "MTA:SA", desc: "Macros avançadas para facilitar suas ações.", file: "ahk_script.ahk" },
+            { id: 6, name: "Internal Cheat MTA SA by Gh!", price: 9.50, cat: "MTA:SA", desc: "Injeção interna com recursos premium.", file: "mta_inject.dll" }
+        ];
+
+        // Pega ID da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        const product = productsDB.find(p => p.id === productId);
+        
+        // Verifica Sessão
+        const session = localStorage.getItem('gh_session');
+        if (!session) {
+            alert("Você precisa estar logado!");
+            window.location.href = 'index.html';
+        }
+
+        // Preenche Dados
+        if (product) {
+            document.getElementById('product-name').innerText = product.name;
+            document.getElementById('product-cat').innerText = product.cat;
+            document.getElementById('product-desc').innerText = product.desc;
+            document.getElementById('product-price').innerText = `R$ ${product.price.toFixed(2).replace('.', ',')}`;
+            document.getElementById('user-email').innerText = session;
+            
+            // Atualiza o terminal fake
+            document.getElementById('terminal-content').innerHTML = `
+                <div>~ /gh_programs/checkout</div>
+                <div class="terminal-line"><span>Arquivo: ${product.file}</span> <span>PRONTO</span></div>
+                <div class="terminal-line"><span>Aguardando pagamento...</span> <span>WAIT</span></div>
+            `;
+        } else {
+            document.getElementById('product-name').innerText = "Produto não encontrado!";
+            document.querySelector('.btn-pay').style.display = 'none';
+        }
+
+        // Copiar Chave Pix
+        function copyPix() {
+            const pixKey = "15991038617";
+            navigator.clipboard.writeText(pixKey).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check" style="color:#059669;"></i> Copiado!';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            }).catch(err => {
+                alert("Erro ao copiar. A chave é: " + pixKey);
+            });
+        }
+
+       /// --- BANCO DE LINKS EMBUTIDO ---
+const downloadLinks = {
+  1: "https://drive.google.com/uc?export=download&id=10G4UkIfNHdFpULhWOIL5nnX6dA5jOs57",
+  2: "https://drive.google.com/uc?export=download&id=13IEFUaulDxllty6L2Iq9SVs8G1vxnf3j",
+  3: "https://drive.google.com/uc?export=download&id=1sPaTM7YVAYecuVDUwFOftaH6QpCxzAoi",
+  4: "https://mega.nz/file/QdB1CBra#Rt47npYBCuMyXnyMsDtxJ2V7OMTRdkGS8uejAit2or4",
+  5: "https://www.mediafire.com/file/58cocitirtnyf68/kit+macro.zip/file",
+  6: "https://drive.google.com/uc?export=download&id=SEU_FILE_ID_AQUI"
+  // ... (adicione os demais se necessário)
+};
+
+function processPayment() {
+  if (!product) return;
+
+  const confirmPayment = confirm(`Você já realizou o pagamento de R$ ${product.price.toFixed(2).replace('.', ',')}?`);
+
+  if (confirmPayment) {
+    // 1. Salva a compra
+    let purchases = JSON.parse(localStorage.getItem('gh_purchases'));
+    purchases.push({
+      email: session,
+      productName: product.name,
+      price: product.price,
+      date: new Date().toLocaleString('pt-BR')
+    });
+    localStorage.setItem('gh_purchases', JSON.stringify(purchases));
+
+    // 2. Pega o link direto do banco embutido
+    const link = downloadLinks[product.id];
+
+    // 3. Libera
+    if (link) {
+      alert(`Pagamento confirmado!\n\nClique OK para abrir o link de download.\nO link também foi enviado para: ${session}`);
+      window.open(link, '_blank');
+    } else {
+      alert("Pagamento confirmado! Mas o link de download não foi encontrado. Fale com o suporte.");
+    }
+
+    window.location.href = 'index.html';
+  }
+}
+    </script>
+</body>
+</html>

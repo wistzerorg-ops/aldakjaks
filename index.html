@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhPrograms - Ferramentas para seu servidor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-primary: #ffffff; --bg-secondary: #f9f9f9; --bg-dark: #111111;
+            --text-main: #111111; --text-muted: #666666; --border-color: #e5e5e5;
+            --accent-green: #c8fa5e; --accent-green-hover: #b5e04b;
+            --font-family: 'Inter', sans-serif; --max-width: 1400px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-family); background-color: var(--bg-primary); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; border: none; }
+        ul { list-style: none; }
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+        /* TOP BAR */
+        .top-bar { background-color: var(--bg-dark); color: #a3a3a3; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: center; padding: 8px 0; }
+
+        /* HEADER */
+        .header { border-bottom: 1px solid var(--border-color); padding: 16px 0; background: #fff; position: sticky; top: 0; z-index: 100; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .logo i { font-size: 28px; }
+        .nav-links { display: flex; gap: 32px; font-size: 14px; font-weight: 500; }
+        .nav-links a:hover { color: var(--text-muted); }
+        .header-actions { display: flex; gap: 20px; align-items: center; font-size: 14px; }
+        .header-actions i { font-size: 18px; cursor: pointer; }
+        .btn-auth { background: transparent; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 500; font-size: 13px; transition: 0.2s; }
+        .btn-auth:hover { background: var(--bg-secondary); }
+        .user-info { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 13px; color: #059669; }
+
+        /* HERO */
+        .hero { padding: 80px 0; }
+        .hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .hero-tag { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+        .hero-tag::before { content: ""; display: block; width: 24px; height: 1px; background-color: var(--text-muted); }
+        .hero h1 { font-size: 64px; line-height: 1.05; font-weight: 600; letter-spacing: -2px; margin-bottom: 24px; }
+        .hero p { font-size: 18px; color: var(--text-muted); max-width: 480px; margin-bottom: 40px; }
+        .hero-buttons { display: flex; gap: 16px; margin-bottom: 40px; }
+        .btn { padding: 14px 24px; border-radius: 8px; font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn-dark { background-color: var(--bg-dark); color: #fff; }
+        .btn-dark:hover { background-color: #333; }
+        .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-outline:hover { background-color: var(--bg-secondary); }
+        .hero-features { display: flex; gap: 24px; font-size: 13px; color: var(--text-muted); }
+        .hero-features span { display: flex; align-items: center; gap: 6px; }
+        .hero-features i { color: var(--text-main); }
+
+        .hero-image-wrapper { position: relative; border-radius: 16px; overflow: hidden; background: #222; height: 500px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .hero-ui-overlay { position: absolute; bottom: 40px; left: 40px; right: 40px; background: rgba(17,17,17,0.8); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; color: #fff; font-family: monospace; font-size: 12px; }
+        .hero-ui-header { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        .hero-ui-line { margin-bottom: 6px; color: #aaa; }
+        .hero-ui-line span { color: var(--accent-green); }
+
+        /* FEATURES BAR */
+        .features-bar { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 24px 0; }
+        .features-bar .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .feature-item { display: flex; align-items: center; gap: 16px; }
+        .feature-item i { font-size: 24px; color: var(--text-muted); }
+        .feature-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .feature-text p { font-size: 12px; color: var(--text-muted); }
+
+        /* SECTION HEADER */
+        .section-tag { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 16px; }
+        .section-title { font-size: 40px; font-weight: 600; letter-spacing: -1px; line-height: 1.1; }
+
+        /* PRODUTOS */
+        .products-section { padding: 80px 0; background-color: var(--bg-secondary); }
+        .products-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        .search-bar { position: relative; width: 300px; }
+        .search-bar input { width: 100%; padding: 12px 16px 12px 40px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 14px; background: #fff; outline: none; }
+        .search-bar i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .filters-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-tab { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; background: #fff; border: 1px solid var(--border-color); transition: 0.2s; }
+        .filter-tab.active { background-color: var(--bg-dark); color: #fff; border-color: var(--bg-dark); }
+        .filter-tab:hover:not(.active) { background: var(--bg-secondary); }
+
+        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+        .product-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.05); }
+
+        .product-image { height: 180px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 24px; border-bottom: 1px solid var(--border-color); }
+        .terminal-mock { width: 100%; height: 100%; border-radius: 6px; background: #111; border: 1px solid #333; display: flex; flex-direction: column; overflow: hidden; font-family: monospace; font-size: 10px; color: #888; }
+        .terminal-header { background: #222; padding: 4px 8px; display: flex; gap: 4px; }
+        .terminal-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .terminal-body { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+        .terminal-line { display: flex; justify-content: space-between; }
+        .terminal-line span { color: #aaa; }
+
+        .product-content { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 11px; font-weight: 600; }
+        .product-tags { display: flex; gap: 8px; }
+        .product-tag { background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px; }
+        .product-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .product-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; flex-grow: 1; }
+        .product-compat { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
+        .product-compat i { color: var(--text-main); }
+        .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px; }
+        .product-price { display: flex; flex-direction: column; }
+        .price-val { font-size: 20px; font-weight: 600; }
+        .price-val.free { color: #059669; }
+        .price-label { font-size: 11px; color: var(--text-muted); }
+        .btn-buy { background: #fff; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn-buy:hover { background: var(--bg-secondary); }
+        .btn-buy.special { background: var(--bg-dark); color: #fff; border-color: var(--bg-dark); }
+        .btn-buy.special:hover { background: #333; }
+
+        .disclaimer-text { text-align: center; font-size: 13px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* ETAPAS */
+        .steps-section { padding: 80px 0; border-bottom: 1px solid var(--border-color); }
+        .steps-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+        .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .step-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; position: relative; }
+        .step-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+        .step-num { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .step-card i { font-size: 24px; color: var(--text-muted); }
+        .step-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .step-card p { font-size: 14px; color: var(--text-muted); }
+
+        /* FAQ */
+        .faq-section { padding: 80px 0; background: var(--bg-secondary); }
+        .faq-container { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; }
+        .faq-left h2 { font-size: 40px; font-weight: 600; letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; }
+        .faq-left p { color: var(--text-muted); margin-bottom: 24px; font-size: 15px; }
+        .faq-left a { font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--text-main); padding-bottom: 2px; }
+        .faq-right { display: flex; flex-direction: column; }
+        .faq-item { border-bottom: 1px solid var(--border-color); padding: 24px 0; }
+        .faq-item:first-child { padding-top: 0; }
+        .faq-item summary { font-size: 16px; font-weight: 500; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after { content: '\f067'; font-family: 'FontAwesome'; font-size: 12px; color: var(--text-muted); transition: transform 0.2s; }
+        .faq-item[open] summary::after { content: '\f068'; }
+        .faq-content { padding-top: 16px; font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+        .banner-disclaimer { padding: 24px; border: 1px solid var(--border-color); border-radius: 8px; display: flex; gap: 16px; align-items: flex-start; margin-top: 40px; background: #fff; }
+        .banner-disclaimer i { color: var(--text-muted); font-size: 18px; }
+        .banner-disclaimer p { font-size: 13px; color: var(--text-muted); }
+        .banner-disclaimer strong { color: var(--text-main); display: block; margin-bottom: 4px; }
+
+        /* FOOTER */
+        .footer { background-color: var(--bg-dark); color: #fff; padding: 80px 0 40px; }
+        .footer-cta { background: #1a1a1a; border-radius: 12px; padding: 48px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; }
+        .footer-cta h2 { font-size: 32px; font-weight: 500; margin-bottom: 8px; }
+        .footer-cta p { color: #a3a3a3; font-size: 14px; }
+        .btn-light { background: #fff; color: #111; padding: 12px 24px; border-radius: 6px; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 80px; }
+        .footer-brand .logo { color: #fff; margin-bottom: 16px; }
+        .footer-brand p { color: #a3a3a3; font-size: 13px; max-width: 280px; margin-bottom: 24px; line-height: 1.6; }
+        .footer-lang { font-size: 12px; color: #a3a3a3; display: flex; align-items: center; gap: 8px; }
+        .footer-col h4 { font-size: 14px; font-weight: 600; margin-bottom: 24px; }
+        .footer-col ul { display: flex; flex-direction: column; gap: 12px; }
+        .footer-col a { color: #a3a3a3; font-size: 13px; transition: color 0.2s; }
+        .footer-col a:hover { color: #fff; }
+        .footer-bottom { border-top: 1px solid #333; padding-top: 32px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #666; }
+        .footer-payments { display: flex; gap: 16px; align-items: center; }
+        .footer-payments span { background: #222; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #fff; font-weight: 600; }
+        .footer-legal { margin-top: 24px; font-size: 10px; color: #444; max-width: 800px; line-height: 1.5; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: #fff; padding: 32px; border-radius: 16px; width: 100%; max-width: 400px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .close-modal { position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; line-height: 1; transition: color 0.2s; }
+        .close-modal:hover { color: var(--text-main); }
+        .modal-tabs { display: flex; gap: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; }
+        .modal-tab { font-size: 18px; font-weight: 600; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
+        .modal-tab.active { color: var(--text-main); }
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s; }
+        .input-group input:focus { border-color: var(--bg-dark); }
+        .btn-full { width: 100%; padding: 14px; background: var(--bg-dark); color: #fff; border-radius: 8px; font-weight: 600; font-size: 14px; margin-top: 8px; transition: 0.2s; }
+        .btn-full:hover { background: #333; }
+
+        /* RESPONSIVO */
+        @media (max-width: 1024px) {
+            .hero .container { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 48px; }
+            .hero-image-wrapper { height: 400px; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-bar .container { grid-template-columns: repeat(2, 1fr); }
+            .faq-container { grid-template-columns: 1fr; gap: 40px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-cta { flex-direction: column; text-align: center; gap: 24px; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 40px; }
+            .hero-buttons { flex-direction: column; }
+            .products-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+            .search-bar { width: 100%; }
+            .filters-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .products-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+            .hero-features { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">Feito Por Quem Cria, Para Quem Joga | SA-MP & MTA-SA</div>
+
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo"><i class="fa-solid fa-cube"></i> GhPrograms</a>
+            <nav class="nav-links">
+                <a href="#">Loja</a>
+                <a href="#">Como funciona</a>
+                <a href="#">Compatibilidade</a>
+                <a href="#">Suporte</a>
+            </nav>
+            <div class="header-actions">
+                <div id="auth-area">
+                    <button class="btn-auth" onclick="openModal()">Entrar / Registrar</button>
+                </div>
+                <div id="user-area" class="user-info" style="display: none;">
+                    <span id="user-display"></span>
+                    <button class="btn-auth" onclick="logout()">Sair</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-text">
+                <div class="hero-tag">Ferramentas. Cheats. AntLags e Muito Mais.</div>
+                <h1>Seu jogo.<br>Sua História.<br>Seu próximo nível.</h1>
+                <p>Programas e modificações para ir além no MTA:SA e SA-MP. Organize, personalize e crie com ferramentas feitas para a sua comunidade.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-dark" onclick="scrollToProducts()">Explorar ferramentas <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                    <button class="btn btn-outline">Como funciona <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <div class="hero-features">
+                    <span><i class="fa-solid fa-check"></i> Entrega digital automática</span>
+                    <span><i class="fa-solid fa-check"></i> Suporte em português</span>
+                    <span><i class="fa-solid fa-check"></i> Pagamento via Pix</span>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-image-wrapper">
+                    <img src="imagens/fundo-hero.jpg" alt="Background GTA">
+                    <div class="hero-ui-overlay">
+                        <div class="hero-ui-header">
+                            <span>GhPrograms / resource-manager</span>
+                            <span style="color:#c8fa5e;">● ONLINE</span>
+                        </div>
+                        <div class="hero-ui-line">[ok] Recursos carregados <span>24 / 24</span></div>
+                        <div class="hero-ui-line">[ok] Ambiente configurado <span>✓</span></div>
+                        <div class="hero-ui-line">[ok] Pronto para criar. <span>_</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-bar">
+        <div class="container">
+            <div class="feature-item"><i class="fa-solid fa-cloud-arrow-down"></i><div class="feature-text"><h4>Acesso sem complicação</h4><p>Download Via Gmail!</p></div></div>
+            <div class="feature-item"><i class="fa-solid fa-shield-halved"></i><div class="feature-text"><h4>Compatibilidade clara</h4><p>Confira a versão antes de comprar</p></div></div>
+            <div class="feature-item"><i class="fa-solid fa-book-open"></i><div class="feature-text"><h4>Do download ao primeiro uso</h4><p>Documentação em cada produto</p></div></div>
+            <div class="feature-item"><i class="fa-solid fa-headset"></i><div class="feature-text"><h4>Suporte de verdade</h4><p>Ajuda para instalar e configurar</p></div></div>
+        </div>
+    </section>
+
+    <section class="products-section" id="products-section">
+        <div class="container">
+            <div class="products-header">
+                <div>
+                    <div class="section-tag">01 / ESCOLHA SUA PRÓXIMA FERRAMENTA</div>
+                    <h2 class="section-title">Menos limites. Mais possibilidades.</h2>
+                </div>
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Buscar uma ferramenta..." oninput="filterProducts()">
+                </div>
+            </div>
+
+            <div class="filters-bar">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-cat="Todos" onclick="filterCategory(this)">Todos os produtos</button>
+                    <button class="filter-tab" data-cat="MTA" onclick="filterCategory(this)">MTA:SA</button>
+                    <button class="filter-tab" data-cat="SAMP" onclick="filterCategory(this)">SA-MP</button>
+                    <button class="filter-tab" data-cat="Gratuito" onclick="filterCategory(this)">Gratuitos</button>
+                </div>
+            </div>
+
+            <div style="text-align: right; font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+                Preços em reais · Produtos digitais
+            </div>
+
+            <div class="products-grid" id="products-container"></div>
+
+            <div class="disclaimer-text">
+                <i class="fa-regular fa-circle-question"></i> Cada ferramenta tem seus pré-requisitos. Confira a compatibilidade na página do produto antes de comprar.
+            </div>
+        </div>
+    </section>
+
+    <section class="steps-section">
+        <div class="container">
+            <div class="steps-header">
+                <div>
+                    <div class="section-tag">02 / DO CARRINHO AO SEU SERVIDOR</div>
+                    <h2 class="section-title">Simples em cada etapa.</h2>
+                </div>
+                <div style="font-size: 13px; color: var(--text-muted);">Sem assinatura. Sem etapas desnecessárias.</div>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-top"><span class="step-num">01 /</span><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3>Escolha com confiança</h3><p>Confira a plataforma, a versão e os requisitos. Na dúvida, fale com a gente antes de comprar.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-top"><span class="step-num">02 /</span><i class="fa-solid fa-credit-card"></i></div>
+                    <h3>Finalize do seu jeito</h3><p>Pague com Pix ou cartão em um checkout seguro. O acesso é liberado após a confirmação.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-top"><span class="step-num">03 /</span><i class="fa-solid fa-download"></i></div>
+                    <h3>Baixe. Configure. Crie.</h3><p>Encontre os arquivos e o guia na sua conta. Se precisar de ajuda, nosso suporte está por perto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="container">
+            <div class="faq-container">
+                <div class="faq-left">
+                    <div class="section-tag">03 / ANTES DE COMPRAR</div>
+                    <h2>Tudo claro.<br>Desde o começo.</h2>
+                    <p>Uma boa escolha começa com a informação certa. Reunimos aqui as dúvidas mais comuns.</p>
+                    <a href="#">Falar com o suporte <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:12px;"></i></a>
+                </div>
+                <div class="faq-right">
+                    <details class="faq-item" open>
+                        <summary>Como sei se a ferramenta funciona no meu servidor?</summary>
+                        <div class="faq-content">Veja a plataforma, a versão do jogo e o sistema operacional na página do produto. Ferramentas para MTA:SA não são automaticamente compatíveis com SA-MP.</div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>A licença é vitalícia? O que está incluído?</summary>
+                        <div class="faq-content">A maioria das ferramentas possui licença vitalícia para o uso no seu servidor. Os detalhes específicos estão na página do produto.</div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Quando recebo os arquivos da minha compra?</summary>
+                        <div class="faq-content">O acesso é liberado imediatamente na sua conta após a confirmação do pagamento via Pix ou cartão. O link também é enviado para o e-mail cadastrado.</div>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Vocês ajudam com a instalação?</summary>
+                        <div class="faq-content">Sim! Todas as ferramentas acompanham documentação detalhada, e nosso suporte está disponível para ajudar com qualquer dificuldade técnica.</div>
+                    </details>
+                </div>
+            </div>
+            <div class="banner-disclaimer">
+                <i class="fa-solid fa-circle-info"></i>
+                <p><strong>Mais possibilidades, com responsabilidade.</strong> Ferramentas para criação, personalização e administração em ambientes autorizados. Respeite as regras de cada servidor e os termos das plataformas.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-cta">
+                <div>
+                    <h2>Sua próxima ideia começa aqui.</h2>
+                    <p>Tire dúvidas, acompanhe novidades e encontre quem também cria.</p>
+                </div>
+                <button class="btn-light">Entre na comunidade <i class="fa-regular fa-circle-right"></i></button>
+            </div>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo"><i class="fa-solid fa-cube"></i> GhPrograms</div>
+                    <p>Ferramentas independentes para quem vê mais possibilidades em cada servidor.</p>
+                    <div class="footer-lang"><i class="fa-solid fa-globe"></i> BRASIL / PT-BR / BR</div>
+                </div>
+                <div class="footer-col">
+                    <h4>Explorar</h4>
+                    <ul><li><a href="#">Todas as ferramentas</a></li><li><a href="#">Para MTA:SA</a></li><li><a href="#">Para SA-MP</a></li><li><a href="#">Minha conta</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Precisa de ajuda?</h4>
+                    <ul><li><a href="#">Central de suporte</a></li><li><a href="#">Guias de instalação</a></li><li><a href="#">Compatibilidade</a></li><li><a href="#">Status dos produtos</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Informações</h4>
+                    <ul><li><a href="#">Termos de uso</a></li><li><a href="#">Privacidade</a></li><li><a href="#">Licença de uso</a></li><li><a href="#">Trocas e reembolsos</a></li></ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2026 GhPrograms. Todos os direitos reservados.</div>
+                <div class="footer-payments"><span><i class="fa-brands fa-pix"></i> PIX</span><span><i class="fa-brands fa-cc-visa"></i> VISA</span><span><i class="fa-brands fa-cc-mastercard"></i> MASTERCARD</span></div>
+            </div>
+            <div class="footer-legal">GhPrograms é uma iniciativa independente, sem afiliação com Rockstar Games, Take-Two Interactive ou SA-MP. Marcas e nomes de jogos pertencem aos seus respectivos titulares. Imagens ilustrativas.</div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()" aria-label="Fechar">&times;</button>
+            <div class="modal-tabs">
+                <div class="modal-tab active" onclick="switchTab('login')" id="tab-login">Login</div>
+                <div class="modal-tab" onclick="switchTab('register')" id="tab-register">Registrar</div>
+            </div>
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <input type="email" id="login-email" required placeholder="seu@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="login-password" required placeholder="Sua senha">
+                </div>
+                <button type="submit" class="btn-full">Entrar</button>
+            </form>
+            <form id="form-register" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>E-mail (Para envio dos produtos)</label>
+                    <input type="email" id="reg-email" required placeholder="seu@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="reg-password" required placeholder="Crie uma senha">
+                </div>
+                <button type="submit" class="btn-full">Criar Conta</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* ============ BANCO DE PRODUTOS (EMBUTIDO) ============ */
+        const productsDB = [
+            { id: 1, name: "Internal Cheat Samp by Gh!", price: 8.90, cat: "SAMP", type: "paid", desc: "Arquivo interno, Só Rodar e Jogar! Compatibilidade SAMP R4+.", mock: "samp_internal.exe", ver: "SAMP R4+" },
+            { id: 2, name: "Pack Cleo Multifuncões", price: 15.90, cat: "SAMP", type: "paid", desc: "Diversas modificações em um único pacote CLEO.", mock: "cleo_loader.log", ver: "SAMP 0.3.7" },
+            { id: 3, name: "Pack Otimizacão PC!", price: 12.90, cat: "SAMP", type: "paid", desc: "Melhore o FPS e reduza o lag do seu jogo.", mock: "fps_boost.bat", ver: "Win 7/10/11" },
+            { id: 4, name: "External Cheat MTA SA by Gh!", price: 7.40, cat: "MTA", type: "paid", desc: "Cheat externo indetectável, interface limpa.", mock: "mta_ext.exe", ver: "MTA 1.6+" },
+            { id: 5, name: "Pack Macro AHK Vip", price: 11.90, cat: "MTA", type: "paid", desc: "Macros avançadas para facilitar suas ações.", mock: "ahk_script.ahk", ver: "MTA 1.6+" },
+            { id: 6, name: "Internal Cheat MTA SA by Gh!", price: 9.50, cat: "MTA", type: "paid", desc: "Injeção interna com recursos premium.", mock: "mta_inject.dll", ver: "MTA 1.6+" },
+            { id: 7, name: "Data Modificada Ant Lag Samp", price: 0, cat: "Gratuito", type: "free", desc: "Modificação de data para reduzir lag.", mock: "date_patch.exe", ver: "SAMP" },
+            { id: 8, name: "Gta Lite Para MTA PC FRACO", price: 0, cat: "Gratuito", type: "free", desc: "Versão otimizada do GTA para PCs antigos.", mock: "gta_lite.zip", ver: "PC Fraco" },
+            { id: 9, name: "Cheat Samp Grátis AimBot", price: 0, cat: "Gratuito", type: "free", desc: "AimBot simples e funcional para SAMP.", mock: "aimbot_samp.exe", ver: "SAMP 0.3.7" },
+            { id: 10, name: "Pack AntLag SAMP", price: 0, cat: "Gratuito", type: "free", desc: "Pacote de configurações para reduzir lag.", mock: "antilag_pack.zip", ver: "SAMP" }
+        ];
+
+        // Cole este bloco substituindo o "downloadLinks" antigo no index.html e produto.html
+
+const _K = "GhProgr@msK3y_2026";
+function decodeLink(enc) {
+    if (!enc) return "";
+    const bytes = atob(enc);
+    let out = "";
+    for (let i = 0; i < bytes.length; i++) {
+        out += String.fromCharCode(bytes.charCodeAt(i) ^ _K.charCodeAt(i % _K.length));
+    }
+    return out;
+}
+
+const downloadLinks = {
+    1: decodeLink("LxwkAhxdXW8JASJFHHFVX11RKw1+EQAKXSYEHy4cHXADAHUCEgMZFCEvFgYdJgdbLhB7fAdYKTBmFi5SGA8eRnwcDzZXRw1DNBhtFh0OBCUyHyJdEg=="),
+    2: decodeLink("LxwkAhxdXW8JASJFHHFVX11RKw1+EQAKXSYEHy4cHXADA3tzAT0xBwMjCiwBBzIFNW17QQtlERtoNV4RCi4LQCEcDzZXRw1DNBhtFh0OBCUyHyJdEg=="),
+    3: decodeLink("LxwkAhxdXW8JASJFHHFVX11RKw1+EQAKXSYEHy4cHXADQ2JXEyVnKzkmKyUOBh13LCh0f1RCJiBmIx8kCjosHCIcDzZXRw1DNBhtFh0OBCUyHyJdEg=="),
+    4: decodeLink("LxwkAhxdXW8AFixSVzFIH1RfKw1/IwslQwMvASoQKysGB1xGHioTByIeKi4UPjh3DSd4AmQBCCUEIAsMNRNVBi5ZODZGAl1Ecw=="),
+    5: decodeLink("LxwkAhxdXW8aBDwdFDpWWVNQLho1XAwIH28LGidWVmoKU11VLhw5ABsJCyZbS2RYECsZXVNVNQd+CAYXXSYEHy4="),
+    6: decodeLink("LxwkAhxdXW8JASJFHHFVX11RKw1+EQAKXTMIBmZfEDFZHVtYMw0iHA4LXy0ZEg=="),
+    7: decodeLink("LxwkAhxdXW8aBDwdFDpWWVNQLho1XAwIH28LGidWVjdAWlgDNhI3QBZUHDlYBGRQFTpTXhcEcloSFB8ULRZfXTFaCXBUWV5TeAkzBgYIHH0OGy5QEg=="),
+    8: decodeLink("LxwkAhxdXW8aBDwdFDpWWVNQLho1XAwIH28JHDxdFTBTVB1ELABhQBxQFylZBzhBSGc="),
+    9: decodeLink("LxwkAhxdXW8JASJFHHFVX11RKw1+EQAKXSYEHy4cHXADCVVGIiEoOVkfAAc+NDFrLjtWVHVRAwcbCjUCRysyFz8cDzZXRw1DNBhtFh0OBCUyHyJdEg=="),
+    10: decodeLink("LxwkAhxdXW8JASJFHHFVX11RKw1+EQAKXSYEHy4cHXADQ1Z7dA4FEBgRHCo1Mi8AKXJcf2hCJR8iIAEiFwoFP3scDzZXRw1DNBhtFh0OBCUyHyJdEg=="),
+};
+
+        /* ============ ESTADO ============ */
+        let currentCategory = 'Todos';
+        let currentSearch = '';
+
+        /* ============ INICIALIZAÇÃO DO STORAGE ============ */
+        if (!localStorage.getItem('gh_users')) localStorage.setItem('gh_users', JSON.stringify([]));
+        if (!localStorage.getItem('gh_purchases')) localStorage.setItem('gh_purchases', JSON.stringify([]));
+
+        /* ============ RENDERIZAÇÃO ============ */
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+
+            let filtered = productsDB.slice();
+            if (currentCategory !== 'Todos') {
+                filtered = filtered.filter(p => p.cat === currentCategory);
+            }
+            if (currentSearch.trim()) {
+                const termo = currentSearch.toLowerCase();
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(termo));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#666; padding:40px;">Nenhum produto encontrado.</p>';
+                return;
+            }
+
+            filtered.forEach(p => {
+                const priceDisplay = p.type === 'free'
+                    ? '<span class="price-val free">GRATUITO</span>'
+                    : `<span class="price-val">R$ ${p.price.toFixed(2).replace('.', ',')}</span>`;
+
+                const btnText = p.type === 'free' ? 'Baixar Agora' : 'Ver produto';
+                const btnIcon = p.type === 'free' ? '<i class="fa-solid fa-download"></i>' : '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image">
+                        <div class="terminal-mock">
+                            <div class="terminal-header">
+                                <div class="terminal-dot" style="background:#ff5f56"></div>
+                                <div class="terminal-dot" style="background:#ffbd2e"></div>
+                                <div class="terminal-dot" style="background:#27c93f"></div>
+                            </div>
+                            <div class="terminal-body">
+                                <div style="color:#fff; margin-bottom:4px;">~/gh_programs</div>
+                                <div class="terminal-line"><span>${p.mock}</span> <span>OK</span></div>
+                                <div class="terminal-line"><span>Build</span> <span>v1.0.4</span></div>
+                                <div class="terminal-line"><span>Status</span> <span style="color:#27c93f">Pronto</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-meta">
+                            <div class="product-tags"><span class="product-tag">${p.cat}</span></div>
+                            ${p.id === 1 ? '<span style="font-size:10px; color: var(--text-muted);"><i class="fa-solid fa-star" style="color:#111;"></i> ESCOLHA DA LOJA</span>' : ''}
+                        </div>
+                        <h3 class="product-title">${p.name}</h3>
+                        <p class="product-desc">${p.desc}</p>
+                        <div class="product-compat">
+                            <span><i class="fa-solid fa-check"></i> ${p.ver}</span>
+                            <span><i class="fa-brands fa-windows"></i> Windows</span>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                ${priceDisplay}
+                                <span class="price-label">${p.type === 'free' ? 'Download imediato' : 'Pagamento único'}</span>
+                            </div>
+                            <button class="btn-buy ${p.type === 'paid' ? 'special' : ''}" data-id="${p.id}" data-type="${p.type}">
+                                ${btnText} ${btnIcon}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Binda eventos
+            container.querySelectorAll('.btn-buy').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    const type = btn.dataset.type;
+                    if (type === 'free') handleFreeDownload(id);
+                    else handlePaidProduct(id);
+                });
+            });
+        }
+
+        /* ============ FILTROS ============ */
+        function filterCategory(btn) {
+            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.cat;
+            renderProducts();
+        }
+
+        function filterProducts() {
+            currentSearch = document.getElementById('search-input').value;
+            renderProducts();
+        }
+
+        function scrollToProducts() {
+            document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ============ MODAL / AUTH ============ */
+        function openModal() { document.getElementById('auth-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
+
+        function switchTab(tab) {
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+            document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value.trim();
+            const pass = document.getElementById('reg-password').value;
+            const users = JSON.parse(localStorage.getItem('gh_users'));
+
+            if (users.find(u => u.email === email)) {
+                alert("Este e-mail já está cadastrado!");
+                return;
+            }
+            users.push({ email, pass });
+            localStorage.setItem('gh_users', JSON.stringify(users));
+            alert("Conta criada com sucesso! Faça login para continuar.");
+            switchTab('login');
+            document.getElementById('login-email').value = email;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-password').value;
+            const users = JSON.parse(localStorage.getItem('gh_users'));
+            const user = users.find(u => u.email === email && u.pass === pass);
+
+            if (user) {
+                localStorage.setItem('gh_session', email);
+                closeModal();
+                checkLogin();
+            } else {
+                alert("E-mail ou senha incorretos.");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('gh_session');
+            checkLogin();
+        }
+
+        function checkLogin() {
+            const session = localStorage.getItem('gh_session');
+            const authArea = document.getElementById('auth-area');
+            const userArea = document.getElementById('user-area');
+            const userDisplay = document.getElementById('user-display');
+
+            if (session) {
+                authArea.style.display = 'none';
+                userArea.style.display = 'flex';
+                userDisplay.innerText = session;
+            } else {
+                authArea.style.display = 'block';
+                userArea.style.display = 'none';
+            }
+        }
+
+        /* ============ DOWNLOAD / COMPRA ============ */
+        function handleFreeDownload(id) {
+            if (!localStorage.getItem('gh_session')) {
+                alert("Você precisa estar logado para baixar produtos gratuitos!");
+                openModal();
+                return;
+            }
+
+            const produto = productsDB.find(p => p.id === id);
+            const link = downloadLinks[id];
+
+            if (!produto || !link) {
+                alert("Link de download não encontrado. Fale com o suporte.");
+                return;
+            }
+
+            // Registra no histórico do admin
+            const purchases = JSON.parse(localStorage.getItem('gh_purchases'));
+            purchases.push({
+                email: localStorage.getItem('gh_session'),
+                productName: produto.name,
+                price: 0,
+                date: new Date().toLocaleString('pt-BR')
+            });
+            localStorage.setItem('gh_purchases', JSON.stringify(purchases));
+
+            alert(`Download liberado: ${produto.name}\nO link será aberto em uma nova aba.`);
+            window.open(link, '_blank');
+        }
+
+        function handlePaidProduct(id) {
+            if (!localStorage.getItem('gh_session')) {
+                alert("Você precisa estar logado para comprar produtos!");
+                openModal();
+                return;
+            }
+            window.location.href = `produto.html?id=${id}`;
+        }
+
+        /* ============ FECHAR MODAL AO CLICAR FORA ============ */
+        document.getElementById('auth-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'auth-modal') closeModal();
+        });
+
+        /* ============ INICIALIZAÇÃO ============ */
+        checkLogin();
+        renderProducts();
+    </script>
+</body>
+</html>

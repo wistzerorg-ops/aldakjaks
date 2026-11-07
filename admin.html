@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - GhPrograms</title>
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg-dark: #111111; --border-color: #e5e5e5; --font-family: 'Inter', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-family); background-color: #f4f4f5; color: #111; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
         
-        /* Tela de Login Admin */
+        /* LOGIN ADMIN */
         #login-screen { display: flex; height: 100vh; align-items: center; justify-content: center; background: var(--bg-dark); }
         .login-box { background: #fff; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .login-box i { font-size: 40px; margin-bottom: 16px; color: var(--bg-dark); }
         .login-box h2 { margin-bottom: 8px; }
         .login-box p { color: #666; font-size: 14px; margin-bottom: 24px; }
-        .login-box input { width: 100%; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
+        .login-box input { width: 100%; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; }
         .login-box input:focus { border-color: var(--bg-dark); }
-        .login-box button { width: 100%; padding: 14px; background: var(--bg-dark); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.2s; }
+        .login-box button { width: 100%; padding: 14px; background: var(--bg-dark); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
         .login-box button:hover { background: #333; }
+        .error { color: #dc2626; font-size: 13px; margin-top: 8px; display: none; }
 
-        /* Dashboard */
+        /* DASHBOARD */
         #dashboard { display: none; padding-bottom: 60px; }
         .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-top: 20px; }
-        .top-nav h1 { font-size: 24px; }
-        .top-nav a { text-decoration: none; color: #666; font-size: 14px; font-weight: 500; }
+        .top-nav h1 { font-size: 24px; display: flex; align-items: center; gap: 8px; }
+        .top-nav .actions { display: flex; gap: 16px; align-items: center; }
+        .top-nav a { text-decoration: none; color: #666; font-size: 14px; font-weight: 500; transition: color 0.2s; }
         .top-nav a:hover { color: #111; }
+        .btn-logout { background: transparent; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-logout:hover { background: var(--bg-dark); color: #fff; }
         
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
         .stat-card { background: #fff; padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .stat-card h3 { font-size: 13px; color: #666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-card p { font-size: 32px; font-weight: 700; }
+        .stat-card p.money { color: #059669; }
         
         .table-container { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); padding: 24px; margin-bottom: 24px; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .table-container h3 { margin-bottom: 20px; font-size: 18px; }
@@ -43,18 +48,26 @@
         tr:last-child td { border-bottom: none; }
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-free { background: #e0e7ff; color: #3730a3; }
+        .empty { text-align: center; color: #999; padding: 30px !important; font-style: italic; }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .top-nav { flex-direction: column; gap: 16px; align-items: flex-start; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
+    <!-- LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <i class="fa-solid fa-lock"></i>
             <h2>Acesso Restrito</h2>
             <p>Digite o token de administrador para continuar.</p>
-            <input type="password" id="admin-token" placeholder="Token de acesso...">
+            <input type="password" id="admin-token" placeholder="Token de acesso..." onkeypress="if(event.key==='Enter') checkToken()">
             <button onclick="checkToken()">Entrar no Painel</button>
+            <div class="error" id="error-msg">Token incorreto! Acesso negado.</div>
         </div>
     </div>
 
@@ -62,7 +75,10 @@
     <div id="dashboard" class="container">
         <div class="top-nav">
             <h1><i class="fa-solid fa-cube"></i> Admin GhPrograms</h1>
-            <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Voltar para a Loja</a>
+            <div class="actions">
+                <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Voltar para a Loja</a>
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -75,26 +91,23 @@
                 <p id="total-sales">0</p>
             </div>
             <div class="stat-card">
-                <h3>Faturamento (Saldo)</h3>
-                <p id="total-revenue" style="color: #059669;">R$ 0,00</p>
+                <h3>Faturamento</h3>
+                <p class="money" id="total-revenue">R$ 0,00</p>
             </div>
         </div>
 
         <div class="table-container">
-            <h3>Logins Registrados</h3>
+            <h3>👥 Logins Registrados</h3>
             <table>
                 <thead>
-                    <tr>
-                        <th>E-mail</th>
-                        <th>Senha</th>
-                    </tr>
+                    <tr><th>E-mail</th><th>Senha</th></tr>
                 </thead>
                 <tbody id="users-table-body"></tbody>
             </table>
         </div>
 
         <div class="table-container">
-            <h3>Histórico de Compras</h3>
+            <h3>🛒 Histórico de Compras / Downloads</h3>
             <table>
                 <thead>
                     <tr>
@@ -111,62 +124,101 @@
     </div>
 
     <script>
-        // Token correto para "" usando a chave "GhProgr@msK3y_2026"
-        const OBFUSCATED_TOKEN = "KxYRFxoW"; 
+        /* ============ TOKEN OFUSCADO (XOR + Base64) ============ */
         const _K = "GhProgr@msK3y_2026";
+        const _ENC = "LAc8HQQI"; // " ofuscado
 
-        function checkToken() {
-            const tokenDigitado = document.getElementById('admin-token').value.trim();
-            
-            // Decodifica a string Base64 e processa a cifra XOR de volta
-            const bytes = atob(OBFUSCATED_TOKEN);
-            let tokenOriginal = "";
+        function decodeToken(enc) {
+            if (!enc) return "";
+            const bytes = atob(enc);
+            let out = "";
             for (let i = 0; i < bytes.length; i++) {
-                tokenOriginal += String.fromCharCode(bytes.charCodeAt(i) ^ _K.charCodeAt(i % _K.length));
+                out += String.fromCharCode(bytes.charCodeAt(i) ^ _K.charCodeAt(i % _K.length));
             }
+            return out;
+        }
 
-            if (tokenDigitado === tokenOriginal) {
+        /* ============ VERIFICAÇÃO ============ */
+        function checkToken() {
+            const input = document.getElementById('admin-token').value;
+            const tokenReal = decodeToken(_ENC);
+
+            if (input === tokenReal) {
+                // Salva sessão para não pedir de novo ao recarregar
+                sessionStorage.setItem('gh_admin_ok', '1');
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadDashboard();
             } else {
-                alert("Token incorreto! Acesso negado.");
+                document.getElementById('error-msg').style.display = 'block';
+                document.getElementById('admin-token').value = '';
+                setTimeout(() => {
+                    document.getElementById('error-msg').style.display = 'none';
+                }, 3000);
             }
         }
 
+        /* ============ LOGOUT ============ */
+        function logout() {
+            sessionStorage.removeItem('gh_admin_ok');
+            location.reload();
+        }
+
+        /* ============ CARREGAR DADOS ============ */
         function loadDashboard() {
             const users = JSON.parse(localStorage.getItem('gh_users')) || [];
             const purchases = JSON.parse(localStorage.getItem('gh_purchases')) || [];
-            
-            // Preenche Usuários
+
+            // Usuários
             const usersTbody = document.getElementById('users-table-body');
             usersTbody.innerHTML = '';
             document.getElementById('total-users').innerText = users.length;
 
-            users.forEach(u => {
-                usersTbody.innerHTML += `<tr><td>${u.email}</td><td>${u.pass}</td></tr>`;
-            });
+            if (users.length === 0) {
+                usersTbody.innerHTML = '<tr><td colspan="2" class="empty">Nenhum usuário registrado ainda.</td></tr>';
+            } else {
+                users.forEach(u => {
+                    usersTbody.innerHTML += `<tr><td>${u.email}</td><td>${u.pass}</td></tr>`;
+                });
+            }
 
-            // Preenche Compras
+            // Compras
             const purchasesTbody = document.getElementById('purchases-table-body');
             purchasesTbody.innerHTML = '';
             document.getElementById('total-sales').innerText = purchases.length;
-            
+
             let revenue = 0;
-            purchases.forEach(p => {
-                revenue += p.price;
-                purchasesTbody.innerHTML += `
-                    <tr>
-                        <td>${p.date}</td>
-                        <td>${p.email}</td>
-                        <td><strong>${p.productName}</strong></td>
-                        <td>R$ ${p.price.toFixed(2).replace('.', ',')}</td>
-                        <td><span class="badge badge-green">Aprovado</span></td>
-                    </tr>
-                `;
-            });
+            if (purchases.length === 0) {
+                purchasesTbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma compra registrada ainda.</td></tr>';
+            } else {
+                purchases.forEach(p => {
+                    revenue += p.price || 0;
+                    const isFree = !p.price || p.price === 0;
+                    const statusBadge = isFree
+                        ? '<span class="badge badge-free">Download Grátis</span>'
+                        : '<span class="badge badge-green">Aprovado</span>';
+                    const valorDisplay = isFree ? 'Grátis' : `R$ ${p.price.toFixed(2).replace('.', ',')}`;
+
+                    purchasesTbody.innerHTML += `
+                        <tr>
+                            <td>${p.date}</td>
+                            <td>${p.email}</td>
+                            <td><strong>${p.productName}</strong></td>
+                            <td>${valorDisplay}</td>
+                            <td>${statusBadge}</td>
+                        </tr>
+                    `;
+                });
+            }
 
             document.getElementById('total-revenue').innerText = `R$ ${revenue.toFixed(2).replace('.', ',')}`;
+        }
+
+        /* ============ AUTO-LOGIN (se recarregar a página logado) ============ */
+        if (sessionStorage.getItem('gh_admin_ok') === '1') {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadDashboard();
         }
     </script>
 </body>

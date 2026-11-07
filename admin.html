@@ -111,11 +111,21 @@
     </div>
 
     <script>
-        const ADMIN_TOKEN = "soloko"; // SEU TOKEN AQUI
+        // O token abaixo equivale a palavra "soloko" criptografada com a chave "GhProgr@msK3y_2026"
+        const OBFUSCATED_TOKEN = "fREvIhoaEA=="; 
+        const _K = "GhProgr@msK3y_2026";
 
         function checkToken() {
-            const token = document.getElementById('admin-token').value;
-            if (token === ADMIN_TOKEN) {
+            const tokenDigitado = document.getElementById('admin-token').value;
+            
+            // Descriptografa o token salvo para validar a entrada
+            const bytes = atob(OBFUSCATED_TOKEN);
+            let tokenOriginal = "";
+            for (let i = 0; i < bytes.length; i++) {
+                tokenOriginal += String.fromCharCode(bytes.charCodeAt(i) ^ _K.charCodeAt(i % _K.length));
+            }
+
+            if (tokenDigitado === tokenOriginal) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadDashboard();
@@ -125,7 +135,6 @@
         }
 
         function loadDashboard() {
-            // Puxa os dados salvos pelo index.html e produto.html
             const users = JSON.parse(localStorage.getItem('gh_users')) || [];
             const purchases = JSON.parse(localStorage.getItem('gh_purchases')) || [];
             

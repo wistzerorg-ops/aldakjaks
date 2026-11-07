@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - GhPrograms</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
     <style>
         :root { --bg-dark: #111111; --border-color: #e5e5e5; --font-family: 'Inter', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -111,14 +111,14 @@
     </div>
 
     <script>
-        // O token abaixo equivale a palavra "soloko" criptografada com a chave "GhProgr@msK3y_2026"
-        const OBFUSCATED_TOKEN = "fREvIhoaEA=="; 
+        // Token correto para "" usando a chave "GhProgr@msK3y_2026"
+        const OBFUSCATED_TOKEN = "KxYRFxoW"; 
         const _K = "GhProgr@msK3y_2026";
 
         function checkToken() {
-            const tokenDigitado = document.getElementById('admin-token').value;
+            const tokenDigitado = document.getElementById('admin-token').value.trim();
             
-            // Descriptografa o token salvo para validar a entrada
+            // Decodifica a string Base64 e processa a cifra XOR de volta
             const bytes = atob(OBFUSCATED_TOKEN);
             let tokenOriginal = "";
             for (let i = 0; i < bytes.length; i++) {
